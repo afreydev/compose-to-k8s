@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: api
+  template:
+    metadata:
+      labels:
+        name: api
+    spec:
+      containers:
+        - name: api
+          image: afreydev/companies-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 5000
+          command: 
+          - bash
+          - run.sh
+          env:
+          - name: MYSQL_HOST
+            value: mysql
+          - name: MYSQL_ROOT_PASSWORD
+            value: password
+          - name: MYSQL_USER
+            value: companies
+          - name: MYSQL_DATABASE
+            value: companies
+          - name: MYSQL_PASSWORD
+            value: password

@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR "$FLASK_ROOT"
-ADD api/requirements.txt .
+ADD requirements.txt .
 
 # Setup Python virtualenv separately from code dir
 RUN pip install virtualenv && \
@@ -36,6 +36,8 @@ ENV PATH="/opt/$VENV_NAME/bin:${PATH}"
 # Install the python dependencies
 RUN pip install -r requirements.txt && \
     rm requirements.txt
+
+COPY ./ /opt/api
 
 # Create flask user
 RUN userdel "$FLASK_USER" && addgroup --system --gid "$FLASK_USER_ID" "$FLASK_USER" && \

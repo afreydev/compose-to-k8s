@@ -2,15 +2,13 @@ version: "3.3"
 services:
     flask:
         build:
-            context: .
-            dockerfile: ./Dockerfile
-        image: repo/companies-backend:1
+            context: ./api
+            dockerfile: Dockerfile
+        image: afreydev/companies-backend:latest
         working_dir: /opt/api/
         command: bash run.sh
         ports:
             - 5000:5000
-        volumes:
-            - ./api/:/opt/api/
         env_file:
             - ./.env
         #environment:
@@ -28,11 +26,12 @@ services:
         links:
             - mysql
     mysql:
-        image: docker.io/mariadb:10.1
+        build:
+            context: ./db
+            dockerfile: Dockerfile
+        image: afreydev/companies-db:latest
         ports:
             - 3306:3306
-        volumes:
-            - ./data/mysql:/var/lib/mysql
         env_file:
             - ./.env
         #environment:
