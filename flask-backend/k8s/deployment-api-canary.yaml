@@ -1,22 +1,23 @@
+# https://developer.harness.io/docs/continuous-delivery/deploy-srv-diff-platforms/kubernetes/kubernetes-executions/create-a-kubernetes-canary-deployment/
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: api-canary
   labels:
-    name: api
+    name: api-canary
 spec:
-  replicas: 4
+  replicas: 1
   # .spec.selector is a required field that specifies a label selector for the Pods targeted by this Deployment.
   selector:
     matchLabels:
       name: api
-      env: prod
+      env: canary
   template:
     # .spec.selector must match .spec.template.metadata.labels, or it will be rejected by the API.
     metadata:
       labels:
         name: api
-        env: prod
+        env: canary
     spec:
       containers:
         - name: api
@@ -39,3 +40,5 @@ spec:
             value: companies
           - name: MYSQL_PASSWORD
             value: password
+          - name: MESSAGE
+            value: this is a canary! prriii priii
