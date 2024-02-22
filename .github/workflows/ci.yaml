@@ -20,10 +20,10 @@ jobs:
           pip install black flake8
       - name: Black
         run: |
-          black --line-length $MAX_LINE_LENGTH ./api || true
+          black --line-length $MAX_LINE_LENGTH . || true
       - name: Flake8
         run: |
-          flake8 --max-line-length $MAX_LINE_LENGTH ./api || true
+          flake8 --max-line-length $MAX_LINE_LENGTH . || true
   ci-backend:
     runs-on: ubuntu-latest
     defaults:
