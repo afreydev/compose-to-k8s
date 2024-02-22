@@ -60,6 +60,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: "{{defaultContext}}:api"
+          context: "{{defaultContext}}"
           push: true
           tags: ${{ env.API_IMAGE_NAME }}:${{ github.run_id }}
