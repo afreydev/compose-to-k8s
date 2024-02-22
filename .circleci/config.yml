@@ -1,6 +1,7 @@
 version: 2.1
 jobs:
   build:
+    working_directory: flask-backend/api
     docker:
       - image: cimg/base:2022.09
         auth:
