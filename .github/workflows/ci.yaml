@@ -1,0 +1,67 @@
+name: CI backend
+on:
+  push:
+    branches:
+          - main
+env:
+  MAX_LINE_LENGTH: 120
+  WORKING_DIR: flask-backend/api
+  API_IMAGE_NAME: afreydev/companies-backend
+jobs:
+  linters:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: |
+          pip install black flake8
+      - name: Black
+        run: |
+          black --line-length $MAX_LINE_LENGTH ./api || true
+      - name: Flake8
+        run: |
+          flake8 --max-line-length $MAX_LINE_LENGTH ./api || true
+  ci-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        id: python-cache
+        with:
+          python-version: '3.10'
+          cache: pip
+      - name: Install packages
+        run: |
+          pip install pytest
+      - name: Run tests
+        run: |
+          echo "Running some tests"
+      -
+        name: Set up QEMU
+        if: ${{ inputs.called == 'true' }}
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        if: ${{ inputs.called == 'true' }}
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to DockerHub
+        if: ${{ inputs.called == 'true' }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      -
+        name: Build and push
+        if: ${{ inputs.called == 'true' }}
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:api"
+          push: true
+          tags: ${{ env.API_IMAGE_NAME }}:${{ github.run_id }}
